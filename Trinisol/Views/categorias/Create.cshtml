@@ -1,0 +1,22 @@
+﻿@model Trinisol.Models.Categoria
+
+@{
+    ViewData["Title"] = "Nueva Categoría";
+}
+
+<h2>Nueva Categoría</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Guardar</button>
+    <a href="/Categorias" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

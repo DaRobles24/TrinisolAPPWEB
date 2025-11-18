@@ -1,0 +1,18 @@
+﻿@model Trinisol.Models.Cliente
+
+@{
+    ViewData["Title"] = "Eliminar Cliente";
+}
+
+<h2>¿Eliminar cliente?</h2>
+
+<div class="alert alert-danger">
+    <strong>@Model.Nombre</strong> será eliminado.
+</div>
+
+<form method="post">
+    <button class="btn btn-danger">
+        <i class="bi bi-trash"></i> Eliminar
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

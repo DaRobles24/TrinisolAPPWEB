@@ -1,0 +1,50 @@
+﻿@model Trinisol.Models.ViewModels.FacturaViewModel
+
+@{
+    ViewData["Title"] = "Vista Previa";
+}
+
+<h2>Vista Previa de Factura</h2>
+
+<div class="mb-3">
+    <strong>Número Factura:</strong> @Model.NumeroFactura
+</div>
+
+<div class="mb-3">
+    <strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy")
+</div>
+
+<div class="mb-3">
+    <strong>Cliente:</strong> @ViewBag.Cliente.Nombre
+</div>
+
+<h4>Detalle</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Presentación</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            var presentacion = Model.Presentaciones.First(p => p.Id == item.PresentacionId);
+            var producto = Model.Productos.First(p => p.Id == item.ProductoId);
+
+            <tr>
+                <td>@producto.Nombre</td>
+                <td>@presentacion.NombrePresentacion</td>
+                <td>@item.Cantidad</td>
+                <td>₡@presentacion.PrecioUnitario</td>
+                <td>₡@(item.Cantidad* presentacion.PrecioUnitario)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="/Factura/Generar" class="btn btn-secondary">Volver</a>

@@ -1,0 +1,33 @@
+﻿@model Trinisol.Models.Producto
+
+@{
+    ViewData["Title"] = "Eliminar Producto";
+}
+
+<h2>Eliminar Producto</h2>
+
+<p>¿Seguro que desea eliminar este producto?</p>
+
+<div>
+    <h5>@Model.Nombre</h5>
+    <p>Código: @Model.Codigo</p>
+    <p>Categoría: @Model.Categoria?.Nombre</p>
+    <p>
+        Presentaciones:
+        @if (Model.Presentaciones != null && Model.Presentaciones.Any())
+        {
+            @string.Join(", ", Model.Presentaciones.Select(p => p.NombrePresentacion))
+
+        }
+        else
+        {
+            <em>No tiene</em>
+        }
+    </p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i> Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+</form>

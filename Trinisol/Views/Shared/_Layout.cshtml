@@ -1,0 +1,149 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Trinisol</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #1b1f3a;
+            color: white;
+            flex-shrink: 0;
+            padding-top: 20px;
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+            .sidebar a {
+                color: white;
+                padding: 12px 20px;
+                display: block;
+                text-decoration: none;
+                transition: 0.2s;
+            }
+
+                .sidebar a:hover {
+                    background: #343a5f;
+                }
+
+        /* Títulos pequeños del menú */
+        .menu-title {
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: #c7c7c7;
+            margin-top: 10px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #2e325a;
+            margin: 10px 0;
+        }
+
+        /* Contenido */
+        .content-area {
+            margin-left: 260px;
+            padding: 20px;
+            margin-top: 56px;
+            width: 100%;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: #111428;
+            height: 56px;
+        }
+
+        .navbar-brand-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            font-size: 1.4rem;
+            color: white;
+        }
+
+        .navbar-logo-left img {
+            height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR SUPERIOR -->
+    <nav class="navbar navbar-dark navbar-custom fixed-top px-3">
+        <!-- Logo izquierda -->
+        <div class="navbar-logo-left">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="Logo" />
+        </div>
+
+        <!-- Centro: Trinisol -->
+        <span class="navbar-brand-center">Trinisol</span>
+    </nav>
+
+    <!-- SIDEBAR IZQUIERDO -->
+    <div class="sidebar">
+
+        <!-- Sección: Principal -->
+        <div class="menu-title">Principal</div>
+        <a href="/"><i class="bi bi-house-door-fill"></i> Inicio</a>
+        <a href="/Factura/Crear"><i class="bi bi-receipt-cutoff"></i> Generar Factura</a>
+
+        <div class="divider"></div>
+
+        <!-- Sección: Gestión -->
+        <div class="menu-title">Gestión</div>
+        <a href="/Categorias"><i class="bi bi-folder-fill"></i> Categorías</a>
+        <a href="/Productos"><i class="bi bi-box-seam"></i> Productos</a>
+        <a href="/Presentaciones"><i class="bi bi-tag-fill"></i> Presentaciones</a>
+        <a href="/Clientes"><i class="bi bi-people-fill"></i> Clientes</a>
+
+        <div class="divider"></div>
+
+        <!-- Sección: Marketing -->
+        <div class="menu-title">Marketing</div>
+        <a href="/Promociones"><i class="bi bi-megaphone-fill"></i> Promociones</a>
+
+        <div class="divider"></div>
+
+        <!-- Sección: Operaciones -->
+        <div class="menu-title">Operaciones</div>
+        <a href="/Giras"><i class="bi bi-geo-alt-fill"></i> Giras / Viajes</a>
+
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="content-area">
+        @RenderBody()
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

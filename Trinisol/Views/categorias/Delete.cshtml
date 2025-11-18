@@ -1,0 +1,17 @@
+﻿@model Trinisol.Models.Categoria
+
+@{
+    ViewData["Title"] = "Eliminar Categoría";
+}
+
+<h2>Eliminar Categoría</h2>
+
+<div class="alert alert-danger">
+    <p>¿Está seguro de que desea eliminar la categoría <strong>@Model.Nombre</strong>?</p>
+</div>
+
+<form asp-action="Eliminar" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i> Eliminar</button>
+    <a href="/Categorias" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+</form>

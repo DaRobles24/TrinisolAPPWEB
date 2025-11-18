@@ -1,0 +1,42 @@
+﻿@model Trinisol.Models.Presentacion
+
+@{
+    ViewData["Title"] = "Nueva Presentación";
+}
+
+<h2>Nueva Presentación</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="NombrePresentacion" class="form-label">Nombre</label>
+        <input asp-for="NombrePresentacion" class="form-control" />
+        <span asp-validation-for="NombrePresentacion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PrecioUnitario" class="form-label">Precio Unitario</label>
+        <input asp-for="PrecioUnitario" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="PrecioUnitario" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PrecioMayorista" class="form-label">Precio Mayorista</label>
+        <input asp-for="PrecioMayorista" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="PrecioMayorista" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ProductoId" class="form-label">Producto</label>
+        <select asp-for="ProductoId" class="form-select" asp-items="@(ViewBag.Productos)">
+            <option value="">-- Seleccione --</option>
+        </select>
+        <span asp-validation-for="ProductoId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

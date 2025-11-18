@@ -1,0 +1,54 @@
+﻿@model Trinisol.Models.Cliente
+
+<h2>Editar Cliente</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label>Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Tipo Cliente</label>
+        <input asp-for="TipoCliente" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Contacto</label>
+        <input asp-for="Contacto" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Teléfono</label>
+        <input asp-for="Telefono" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Correo</label>
+        <input asp-for="Correo" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="Provincia" class="form-label">Provincia</label>
+        <select asp-for="Provincia" class="form-control" asp-items="@(new SelectList(ViewBag.Provincias))">
+            <option value="">Seleccione una provincia</option>
+        </select>
+        <span asp-validation-for="Provincia" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group">
+        <label>Dirección Google Maps</label>
+        <input asp-for="DireccionGoogleMaps" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Observaciones</label>
+        <textarea asp-for="Observaciones" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Cancelar</a>
+</form>

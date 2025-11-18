@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Trinisol.Models.Presentacion>
+
+@{
+    ViewData["Title"] = "Presentaciones";
+    var formato = new System.Globalization.CultureInfo("es-CR");
+}
+
+<h2>Presentaciones</h2>
+
+<div class="mb-3">
+    <a class="btn btn-primary" asp-action="Create">
+        <i class="bi bi-plus-circle"></i> Nueva Presentación
+    </a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio Unitario</th>
+            <th>Precio Mayorista</th>
+            <th>Producto</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var presentacion in Model)
+        {
+            <tr>
+                <td>@presentacion.Id</td>
+                <td>@presentacion.NombrePresentacion</td>
+
+                <!-- Precios en Colones (₡) -->
+                <td>₡@presentacion.PrecioUnitario.ToString("N0")</td>
+                <td>₡@presentacion.PrecioMayorista.ToString("N0")</td>
+
+
+                <!-- Nombre del producto -->
+                <td>
+                    @if (presentacion.Producto != null)
+                    {
+                        @presentacion.Producto.Nombre
+                    }
+                    else
+                    {
+                        @Html.Raw("<em>No tiene</em>")
+                    }
+                </td>
+
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@presentacion.Id">
+                        <i class="bi bi-pencil-fill"></i> Editar
+                    </a>
+                    <form asp-action="Delete"
+                          asp-route-id="@presentacion.Id"
+                          method="post"
+                          style="display:inline"
+                          onsubmit="return confirm('¿Seguro que desea eliminar esta presentación?');">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash-fill"></i> Eliminar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

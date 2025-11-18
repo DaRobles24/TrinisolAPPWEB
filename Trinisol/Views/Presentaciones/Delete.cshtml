@@ -1,0 +1,22 @@
+﻿@model Trinisol.Models.Presentacion
+
+@{
+    ViewData["Title"] = "Eliminar Presentación";
+}
+
+<h2>Eliminar Presentación</h2>
+
+<p>¿Seguro que desea eliminar esta presentación?</p>
+
+<div>
+    <h5>@Model.NombrePresentacion</h5>
+    <p>Precio Unitario: @Model.PrecioUnitario.ToString("C")</p>
+    <p>Precio Mayorista: @Model.PrecioMayorista.ToString("C")</p>
+    <p>Producto: @Model.Producto?.Nombre</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i> Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+</form>

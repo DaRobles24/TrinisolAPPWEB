@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Trinisol.Models.Cliente>
+
+<h2>Lista de Clientes</h2>
+
+<a class="btn btn-primary mb-3" asp-action="Create">Nuevo Cliente</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Tipo Cliente</th>
+            <th>Contacto</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Provincia</th>
+            <th>Dirección</th>
+            <th>Observaciones</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Id</td>
+                <td>@c.Nombre</td>
+                <td>@c.TipoCliente</td>
+                <td>@c.Contacto</td>
+                <td>@c.Telefono</td>
+                <td>@c.Correo</td>
+                <td>@c.Provincia</td>
+                <td>@c.DireccionGoogleMaps</td>
+                <td>@c.Observaciones</td>
+                <td>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@c.Id">Editar</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@c.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

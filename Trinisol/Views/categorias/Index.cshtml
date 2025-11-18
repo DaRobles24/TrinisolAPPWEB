@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Trinisol.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<h2>Categorías</h2>
+
+<div class="mb-3">
+    <a class="btn btn-primary" asp-controller="Categorias" asp-action="Create">
+        <i class="bi bi-plus-circle"></i> Nueva Categoría
+    </a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var categoria in Model)
+        {
+            <tr>
+                <td>@categoria.Id</td>
+                <td>@categoria.Nombre</td>
+                <td>
+                    <!-- Botón Editar -->
+                    <a class="btn btn-sm btn-warning"
+                       asp-controller="Categorias"
+                       asp-action="Edit"
+                       asp-route-id="@categoria.Id">
+                        <i class="bi bi-pencil-fill"></i> Editar
+                    </a>
+
+                    <!-- Botón Eliminar (POST seguro) -->
+                    <form asp-controller="Categorias"
+                          asp-action="Delete"
+                          asp-route-id="@categoria.Id"
+                          method="post"
+                          style="display:inline"
+                          onsubmit="return confirm('¿Seguro que desea eliminar esta categoría?');">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash-fill"></i> Eliminar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
