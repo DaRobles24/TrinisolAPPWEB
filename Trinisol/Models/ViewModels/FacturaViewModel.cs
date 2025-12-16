@@ -13,14 +13,18 @@ namespace Trinisol.Models.ViewModels
 
         public List<FacturaItemViewModel> Items { get; set; } = new();
 
-        public string MetodoPago { get; set; }
+        public string MetodoPago { get; set; } = "Sinpe";
 
-        // ---------- NUEVO: listas completas ----------
+        // Nuevos campos para el facturador
+        public string FacturadoPor { get; set; } = string.Empty;
+        public string TelefonoFacturador { get; set; } = string.Empty;
+
+        // Listas completas
         public IEnumerable<ClienteDto> Clientes { get; set; }
         public IEnumerable<ProductoDto> Productos { get; set; }
         public IEnumerable<PresentacionDto> Presentaciones { get; set; }
 
-        // ---------- Cálculos ----------
+        // Cálculos
         public decimal SaldoPendiente { get; set; }
         public decimal Pago { get; set; }
 

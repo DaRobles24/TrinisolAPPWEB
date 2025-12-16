@@ -4,6 +4,8 @@ using Trinisol.Repositories;
 using Trinisol.Services;
 
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 🔹 Conexión MySQL
@@ -25,6 +27,7 @@ builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IPresentacionService, PresentacionService>();
 builder.Services.AddScoped<IFacturaService, FacturaService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+
 
 // 🔹 Controladores y vistas
 builder.Services.AddControllersWithViews();

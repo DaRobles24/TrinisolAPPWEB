@@ -2,6 +2,8 @@
 using Trinisol.Data;
 using Trinisol.Models.ViewModels;
 using Trinisol.Models.Dto;
+using Trinisol.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Trinisol.Controllers
 {
@@ -14,7 +16,7 @@ namespace Trinisol.Controllers
             _context = context;
         }
 
-        // GET: /Factura/Generar
+        // GET: /Factura/Generar - PÁGINA ÚNICA CON TODO
         public IActionResult Generar()
         {
             var model = new FacturaViewModel
@@ -23,7 +25,6 @@ namespace Trinisol.Controllers
                 Fecha = DateTime.Now
             };
 
-            // Load DTO lists
             model.Clientes = _context.Clientes
                 .Select(c => new ClienteDto
                 {
@@ -50,49 +51,106 @@ namespace Trinisol.Controllers
                 })
                 .ToList();
 
-            return View("Generar", model);  // Views/Factura/Generar.cshtml
+            return View("Generar", model);
         }
 
-        // POST: /Factura/Preview
+        // POST: /Factura/Guardar - Guarda directo desde el formulario único
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Preview(FacturaViewModel model)
+        public async Task<IActionResult> Guardar(FacturaViewModel model)
         {
-            // Validate items
-            model.Items = model.Items
-                .Where(i => i.ProductoId > 0 && i.Cantidad > 0)
-                .ToList();
+            try
+            {
+                // Filtrar solo items válidos
+                var itemsValidos = model.Items
+                    .Where(i => i.ProductoId > 0 && i.PresentacionId > 0 && i.Cantidad > 0)
+                    .ToList();
 
-            // Reload lists (POST loses them)
-            model.Clientes = _context.Clientes
-                .Select(c => new ClienteDto
+                if (!itemsValidos.Any())
                 {
-                    Id = c.Id,
-                    Nombre = c.Nombre
-                })
-                .ToList();
+                    TempData["Error"] = "Debe agregar al menos un producto";
+                    return RedirectToAction("Generar");
+                }
 
-            model.Productos = _context.Productos
-                .Select(p => new ProductoDto
+                // Calcular totales
+                decimal subtotalProductos = 0;
+                foreach (var item in itemsValidos)
                 {
-                    Id = p.Id,
-                    Nombre = p.Nombre
-                })
-                .ToList();
+                    var presentacion = await _context.Presentaciones.FindAsync(item.PresentacionId);
+                    if (presentacion != null)
+                    {
+                        subtotalProductos += presentacion.PrecioUnitario * item.Cantidad;
+                    }
+                }
 
-            model.Presentaciones = _context.Presentaciones
-                .Select(p => new PresentacionDto
+                var factura = new Factura
                 {
-                    Id = p.Id,
-                    ProductoId = p.ProductoId,
-                    NombrePresentacion = p.NombrePresentacion,
-                    PrecioUnitario = p.PrecioUnitario
-                })
-                .ToList();
+                    NumeroFactura = model.NumeroFactura,
+                    Fecha = model.Fecha,
+                    ClienteId = model.ClienteId,
+                    MetodoPago = model.MetodoPago ?? "Sinpe",
+                    SaldoPendiente = model.SaldoPendiente,
+                    Pago = model.Pago,
+                    Total = subtotalProductos + model.SaldoPendiente,
+                    FacturadoPor = model.FacturadoPor,
+                    TelefonoFacturador = model.TelefonoFacturador,
+                    ProductosFacturados = new List<ProductoFactura>()
+                };
 
-            ViewBag.Cliente = _context.Clientes.First(c => c.Id == model.ClienteId);
+                foreach (var item in itemsValidos)
+                {
+                    var presentacion = await _context.Presentaciones.FindAsync(item.PresentacionId);
 
-            return View("Preview", model);  // Views/Factura/Preview.cshtml
+                    factura.ProductosFacturados.Add(new ProductoFactura
+                    {
+                        ProductoId = item.ProductoId,
+                        PresentacionId = item.PresentacionId,
+                        Cantidad = item.Cantidad,
+                        PrecioUnitario = presentacion.PrecioUnitario
+                    });
+                }
+
+                _context.Facturas.Add(factura);
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Factura guardada exitosamente";
+                return RedirectToAction("Detalle", new { id = factura.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al guardar la factura: " + ex.Message;
+                return RedirectToAction("Generar");
+            }
+        }
+
+        // GET: /Factura/Detalle/5
+        public async Task<IActionResult> Detalle(int id)
+        {
+            var factura = await _context.Facturas
+                .Include(f => f.Cliente)
+                .Include(f => f.ProductosFacturados)
+                    .ThenInclude(pf => pf.Producto)
+                .Include(f => f.ProductosFacturados)
+                    .ThenInclude(pf => pf.Presentacion)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+            if (factura == null)
+            {
+                return NotFound();
+            }
+
+            return View("Detalle", factura);
+        }
+
+        // GET: /Factura/Lista
+        public async Task<IActionResult> Lista()
+        {
+            var facturas = await _context.Facturas
+                .Include(f => f.Cliente)
+                .OrderByDescending(f => f.Fecha)
+                .ToListAsync();
+
+            return View("Lista", facturas);
         }
     }
 }

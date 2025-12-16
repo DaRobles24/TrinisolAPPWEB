@@ -14,8 +14,11 @@ namespace Trinisol.Models
         public decimal SaldoPendiente { get; set; } = 0;
         public decimal Pago { get; set; } = 0;
         public string MetodoPago { get; set; } = "Sinpe";
-        public int NumeroFactura { get; set; } // Opcional si querés controlar numeración
+        public int NumeroFactura { get; set; }
 
+        // Nuevos campos para el facturador
+        public string FacturadoPor { get; set; } = string.Empty;
+        public string TelefonoFacturador { get; set; } = string.Empty;
 
         // Lista de productos facturados
         public List<ProductoFactura> ProductosFacturados { get; set; } = new List<ProductoFactura>();

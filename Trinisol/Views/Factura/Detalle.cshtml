@@ -1,0 +1,423 @@
+﻿@model Trinisol.Models.Factura
+
+@{
+    ViewData["Title"] = "Factura #" + Model.NumeroFactura;
+    var subtotal = Model.ProductosFacturados.Sum(p => p.Subtotal);
+}
+
+<style>
+    @@media print {
+        .no-print {
+            display: none !important;
+        }
+
+        .sidebar {
+            display: none !important;
+        }
+
+        .navbar {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .factura-container {
+            box-shadow: none;
+            margin: 0;
+        }
+    }
+
+    .factura-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        box-shadow: 0 0 30px rgba(0,0,0,0.15);
+    }
+
+    /* HEADER VERDE */
+    .factura-header {
+        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        padding: 30px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .factura-title-section h1 {
+        color: #1e3a8a;
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin: 0 0 5px 0;
+    }
+
+    .factura-numero {
+        color: #1e3a8a;
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 5px 0;
+    }
+
+    .factura-fecha {
+        color: #1e3a8a;
+        font-size: 0.9rem;
+        margin: 5px 0;
+    }
+
+    /* LOGO */
+    .logo-container {
+        background: white;
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        text-align: center;
+    }
+
+        .logo-container img {
+            height: 80px;
+            margin-bottom: 5px;
+        }
+
+    /* SECCIÓN INFO CLIENTE/EMPRESA */
+    .info-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        padding: 30px 40px;
+        background: white;
+    }
+
+    .info-box h3 {
+        color: #1f2937;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .info-box p {
+        margin: 3px 0;
+        color: #4b5563;
+        font-size: 0.95rem;
+    }
+
+        .info-box p strong {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+    /* TABLA */
+    .tabla-factura {
+        margin: 0 40px 30px 40px;
+    }
+
+        .tabla-factura table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tabla-factura thead {
+            background: #4ade80;
+            color: white;
+        }
+
+            .tabla-factura thead th {
+                padding: 12px 15px;
+                text-align: left;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+
+                .tabla-factura thead th:last-child {
+                    text-align: right;
+                }
+
+        .tabla-factura tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+            .tabla-factura tbody tr.saldo-pendiente {
+                background: #fffbeb;
+            }
+
+            .tabla-factura tbody tr.producto-item {
+                background: #f0fdf4;
+            }
+
+        .tabla-factura tbody td {
+            padding: 15px;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+            .tabla-factura tbody td:last-child {
+                text-align: right;
+                font-weight: 600;
+            }
+
+    /* TOTALES */
+    .totales-section {
+        margin: 0 40px 30px 40px;
+    }
+
+    .total-row {
+        background: #4ade80;
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .pago-row {
+        background: white;
+        color: #1f2937;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        border-left: 3px solid #4ade80;
+        border-right: 3px solid #4ade80;
+    }
+
+    .pendiente-row {
+        background: #22c55e;
+        color: white;
+        padding: 18px 20px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    /* MÉTODOS DE PAGO */
+    .metodos-pago {
+        padding: 30px 40px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+        .metodos-pago h3 {
+            color: #1e3a8a;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+    .sinpe-logo {
+        display: inline-block;
+        background: #0066cc;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .metodos-pago p {
+        margin: 5px 0;
+        color: #4b5563;
+        font-size: 0.95rem;
+    }
+
+    .agradecimiento {
+        text-align: right;
+        margin-top: 20px;
+        font-style: italic;
+        color: #059669;
+        font-weight: 600;
+    }
+
+    /* FOOTER */
+    .factura-footer {
+        background: #1e293b;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+
+    /* BOTONES */
+    .btn-actions {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .btn-custom {
+        padding: 12px 30px;
+        margin: 0 5px;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 1rem;
+    }
+
+    .btn-print {
+        background: #4ade80;
+        color: white;
+    }
+
+        .btn-print:hover {
+            background: #22c55e;
+        }
+
+    .btn-back {
+        background: #6b7280;
+        color: white;
+    }
+
+        .btn-back:hover {
+            background: #4b5563;
+        }
+</style>
+
+<div class="factura-container">
+    <!-- HEADER -->
+    <div class="factura-header">
+        <div class="factura-title-section">
+            <h1>Factura</h1>
+            <p class="factura-numero">Nro. @Model.NumeroFactura</p>
+            <p class="factura-fecha">Fecha: @Model.Fecha.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</p>
+        </div>
+        <div class="logo-container">
+            <img id="logoFactura" src="" alt="Trinisol" style="max-width: 120px; max-height: 80px; display: none;" />
+            <div id="logoPlaceholder">
+                <div style="font-size: 2rem; font-weight: 700; color: #059669;">TRINI S+L</div>
+                <div style="font-size: 0.75rem; color: #6b7280;">Limpia y Desinfecta</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INFORMACIÓN CLIENTE Y EMPRESA -->
+    <div class="info-section">
+        <div class="info-box">
+            <h3>Cliente:</h3>
+            <p><strong>@Model.Cliente.Nombre</strong></p>
+            @if (!string.IsNullOrEmpty(Model.Cliente.DireccionGoogleMaps))
+            {
+                <p>@Model.Cliente.DireccionGoogleMaps</p>
+            }
+            @if (!string.IsNullOrEmpty(Model.Cliente.Provincia))
+            {
+                <p>@Model.Cliente.Provincia</p>
+            }
+            @if (!string.IsNullOrEmpty(Model.Cliente.Telefono))
+            {
+                <p>@Model.Cliente.Telefono</p>
+            }
+        </div>
+
+        <div class="info-box">
+            <h3>Empresa</h3>
+            <p><strong>Trinisol</strong></p>
+        </div>
+    </div>
+
+    <!-- TABLA DE PRODUCTOS -->
+    <div class="tabla-factura">
+        <table>
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th style="text-align: center; width: 100px;">Cantidad</th>
+                    <th style="text-align: right; width: 150px;">Precio Unitario</th>
+                    <th style="text-align: right; width: 150px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.SaldoPendiente > 0)
+                {
+                    <tr class="saldo-pendiente">
+                        <td colspan="3" style="color: #92400e; font-weight: 600;">
+                            Saldo Pendiente 28 Septiembre
+                        </td>
+                        <td style="text-align: right; color: #92400e; font-weight: 700;">
+                            ₡@Model.SaldoPendiente.ToString("N0")
+                        </td>
+                    </tr>
+                }
+
+                @foreach (var item in Model.ProductosFacturados)
+                {
+                    <tr class="producto-item">
+                        <td>
+                            <strong>@item.Producto.Nombre</strong>
+                        </td>
+                        <td style="text-align: center;">@item.Cantidad</td>
+                        <td style="text-align: right;">₡@item.PrecioUnitario.ToString("N0")</td>
+                        <td style="text-align: right;">₡@item.Subtotal.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- TOTALES -->
+    <div class="totales-section">
+        <div class="total-row">
+            <span>Subtotal:</span>
+            <span>₡@((Model.SaldoPendiente + subtotal).ToString("N0"))</span>
+        </div>
+
+        <div class="pago-row">
+            <span>Pago</span>
+            <span>₡@Model.Pago.ToString("N0")</span>
+        </div>
+
+        <div class="pendiente-row">
+            <span>Total Pendiente:</span>
+            <span>₡@((Model.SaldoPendiente + subtotal - Model.Pago).ToString("N0"))</span>
+        </div>
+    </div>
+
+    <!-- MÉTODOS DE PAGO -->
+    <div class="metodos-pago">
+        <h3>Métodos de pago</h3>
+
+        <div class="sinpe-logo">@Model.MetodoPago</div>
+
+        <p style="font-weight: 700; font-size: 1.1rem; color: #1f2937;">
+            @(!string.IsNullOrEmpty(Model.TelefonoFacturador) ? Model.TelefonoFacturador : "8449-1620")
+        </p>
+        <p style="font-weight: 600;">
+            @(!string.IsNullOrEmpty(Model.FacturadoPor) ? Model.FacturadoPor : "Daniel Jesus Robles Meza")
+        </p>
+
+        <div class="agradecimiento">
+            <p>¡Gracias por la confianza!</p>
+            <p>Trinisol Productos de Limpieza</p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="factura-footer">
+        Trinisol - Limpieza y Desinfección Profesional
+    </div>
+</div>
+
+<!-- BOTONES DE ACCIÓN -->
+<div class="btn-actions no-print">
+    <button onclick="window.print()" class="btn-custom btn-print">
+        <i class="bi bi-printer"></i> Imprimir Factura
+    </button>
+    <a href="/Factura/Lista" class="btn-custom btn-back">
+        <i class="bi bi-arrow-left"></i> Volver al Listado
+    </a>
+</div>
+
+<script>
+    // Cargar logo guardado en localStorage
+    window.addEventListener('load', function() {
+        const logoGuardado = localStorage.getItem('trinisolLogo');
+        if (logoGuardado) {
+            const imgFactura = document.getElementById('logoFactura');
+            imgFactura.src = logoGuardado;
+            imgFactura.style.display = 'block';
+            document.getElementById('logoPlaceholder').style.display = 'none';
+        }
+    });
+</script>

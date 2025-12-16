@@ -4,128 +4,759 @@
     ViewData["Title"] = "Generar Factura";
 }
 
-<h2>Generar Factura</h2>
+<style>
+    .container-factura {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
 
-<form asp-action="Preview" method="post">
+    /* FORMULARIO ARRIBA */
+    .formulario-section {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
 
-    <div class="mb-3">
-        <label>Número de Factura</label>
-        <input asp-for="NumeroFactura" class="form-control" readonly />
-    </div>
+    .form-header {
+        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin: -30px -30px 25px -30px;
+    }
 
-    <div class="mb-3">
-        <label>Fecha</label>
-        <input asp-for="Fecha" class="form-control" readonly />
-    </div>
+        .form-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
 
-    <div class="mb-3">
-        <label>Cliente</label>
-        <select asp-for="ClienteId" class="form-control">
-            <option value="">Seleccione un cliente</option>
-            @foreach (var c in Model.Clientes)
-            {
-                <option value="@c.Id">@c.Nombre</option>
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .form-grid-full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #4ade80;
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+        }
+
+    .productos-section {
+        background: #f9fafb;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .productos-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .btn-add-item {
+        padding: 10px 20px;
+        background: #22c55e;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .btn-add-item:hover {
+            background: #16a34a;
+        }
+
+    .item-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 100px 40px;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 12px;
+        background: white;
+        border-radius: 6px;
+        border: 2px solid #e5e7eb;
+        align-items: center;
+    }
+
+    .item-selects {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn-remove {
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 8px;
+        height: 40px;
+    }
+
+        .btn-remove:hover {
+            background: #dc2626;
+        }
+
+    .pago-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        background: #f0fdf4;
+        padding: 20px;
+        border-radius: 8px;
+        border: 2px solid #4ade80;
+    }
+
+    .btn-guardar {
+        width: 100%;
+        padding: 18px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.3s;
+    }
+
+        .btn-guardar:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+    /* PREVIEW ABAJO */
+    .preview-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .preview-header {
+        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        padding: 30px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .preview-title h1 {
+        color: #1e3a8a;
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin: 0 0 5px 0;
+    }
+
+    .preview-numero {
+        color: #1e3a8a;
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 5px 0;
+    }
+
+    .logo-box {
+        background: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        text-align: center;
+        min-width: 150px;
+    }
+
+        .logo-box img {
+            max-width: 120px;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .logo-box .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .logo-box .logo-subtitle {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+    .preview-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        padding: 30px 40px;
+    }
+
+    .info-box h3 {
+        color: #1f2937;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .info-box p {
+        margin: 3px 0;
+        color: #4b5563;
+        font-size: 0.9rem;
+    }
+
+    .preview-table {
+        margin: 0 40px 30px 40px;
+    }
+
+        .preview-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .preview-table thead {
+            background: #4ade80;
+            color: white;
+        }
+
+        .preview-table th {
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .preview-table tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+            .preview-table tbody tr.saldo-row {
+                background: #fffbeb;
             }
-        </select>
+
+            .preview-table tbody tr.producto-row {
+                background: #f0fdf4;
+            }
+
+        .preview-table td {
+            padding: 12px 15px;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+    .preview-totales {
+        margin: 0 40px 30px 40px;
+    }
+
+    .total-bar {
+        background: #4ade80;
+        color: white;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+    }
+
+    .pago-bar {
+        background: white;
+        color: #1f2937;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        border-left: 3px solid #4ade80;
+        border-right: 3px solid #4ade80;
+    }
+
+    .pendiente-bar {
+        background: #22c55e;
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .preview-footer {
+        padding: 30px 40px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+        .preview-footer h3 {
+            color: #1e3a8a;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+    .metodo-pago-badge {
+        display: inline-block;
+        background: #0066cc;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #9ca3af;
+    }
+</style>
+
+<div class="container-factura">
+    <!-- FORMULARIO ARRIBA -->
+    <div class="formulario-section">
+        <div class="form-header">
+            <h2><i class="bi bi-plus-circle"></i> Nueva Factura</h2>
+        </div>
+
+        <form id="formFactura" asp-action="Guardar" method="post">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Número de Factura</label>
+                    <input asp-for="NumeroFactura" class="form-control" type="number" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input asp-for="Fecha" class="form-control" type="date" />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="bi bi-person"></i> Cliente</label>
+                    <select asp-for="ClienteId" id="selectCliente" class="form-select" required>
+                        <option value="">Seleccione un cliente...</option>
+                        @foreach (var c in Model.Clientes)
+                        {
+                            <option value="@c.Id" data-nombre="@c.Nombre">@c.Nombre</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label><i class="bi bi-person-badge"></i> Facturado por</label>
+                <select id="selectFacturadoPor" class="form-select" required onchange="actualizarFacturador()">
+                    <option value="">Seleccione quién factura...</option>
+                    <option value="daniel" data-telefono="8449-1620" data-nombre="Daniel Jesus Robles Meza">Daniel Jesus Robles Meza</option>
+                    <option value="nelcy" data-telefono="6156-5618" data-nombre="Nelcy Esther Meza Sinning">Nelcy Esther Meza Sinning</option>
+                </select>
+                <input type="hidden" name="FacturadoPor" id="hiddenFacturadoPor" />
+                <input type="hidden" name="TelefonoFacturador" id="hiddenTelefonoFacturador" />
+            </div>
+
+            <div class="productos-section">
+                <div class="productos-header">
+                    <h4 style="margin: 0;"><i class="bi bi-box-seam"></i> Productos</h4>
+                    <button type="button" class="btn-add-item" onclick="agregarItem()">
+                        <i class="bi bi-plus"></i> Agregar Producto
+                    </button>
+                </div>
+                <div id="itemsContainer">
+                    <!-- Los items se agregarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <div class="pago-grid">
+                <div class="form-group">
+                    <label><i class="bi bi-exclamation-triangle text-warning"></i> Saldo Pendiente</label>
+                    <input asp-for="SaldoPendiente" id="inputSaldoPendiente" class="form-control"
+                           type="number" step="0.01" value="0" placeholder="0.00" />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="bi bi-cash"></i> Pago Recibido</label>
+                    <input asp-for="Pago" id="inputPago" class="form-control"
+                           type="number" step="0.01" value="0" placeholder="0.00" />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="bi bi-credit-card"></i> Método de Pago</label>
+                    <select asp-for="MetodoPago" id="selectMetodoPago" class="form-select">
+                        <option value="Sinpe">Sinpe</option>
+                        <option value="Sinpe Pendiente">Sinpe Pendiente</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Efectivo Pendiente">Efectivo Pendiente</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-guardar">
+                <i class="bi bi-save"></i> Guardar Factura
+            </button>
+
+        </form>
     </div>
 
-    <h4>Productos</h4>
+    <!-- PREVIEW ABAJO -->
+    <div class="preview-section">
+        <div class="preview-header">
+            <div class="preview-title">
+                <h1>Factura</h1>
+                <p class="preview-numero">Nro. <span id="previewNumero">@Model.NumeroFactura</span></p>
+                <p class="preview-numero">Fecha: <span id="previewFecha">@Model.Fecha.ToString("dd/MM/yyyy")</span></p>
+            </div>
+            <div class="logo-box">
+                <img id="logoPreview" src="" alt="Trinisol Logo" style="display: none;" />
+                <div id="logoPlaceholder">
+                    <div class="logo-text">TRINI S+L</div>
+                    <div class="logo-subtitle">Limpia y Desinfecta</div>
+                </div>
+            </div>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Presentación</th>
-                <th>Cantidad</th>
-            </tr>
-        </thead>
-        <tbody id="items-body">
-            @for (int i = 0; i < Model.Items.Count; i++)
-            {
-                <tr>
-                    <td>
-                        <select asp-for="Items[@i].ProductoId" class="form-control product-select">
-                            <option value="">Seleccione</option>
-                            @foreach (var p in Model.Productos)
-                            {
-                                <option value="@p.Id">@p.Nombre</option>
-                            }
-                        </select>
-                    </td>
+        <div class="preview-info">
+            <div class="info-box">
+                <h3>Cliente:</h3>
+                <p id="previewCliente" style="font-weight: 600; color: #1f2937;">
+                    <em style="color: #9ca3af;">Seleccione un cliente</em>
+                </p>
+            </div>
+            <div class="info-box">
+                <h3>Empresa</h3>
+                <p style="font-weight: 600; color: #1f2937;">Trinisol</p>
+            </div>
+        </div>
 
-                    <td>
-                        <select asp-for="Items[@i].PresentacionId" class="form-control presentacion-select">
-                            <option value="">Seleccione presentación</option>
-                            @foreach (var pr in Model.Presentaciones)
-                            {
-                                <option value="@pr.Id" data-producto="@pr.ProductoId">
-                                    @pr.NombrePresentacion (₡@pr.PrecioUnitario)
-                                </option>
-                            }
-                        </select>
-                    </td>
+        <div class="preview-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th style="text-align: center; width: 80px;">Cantidad</th>
+                        <th style="text-align: right; width: 120px;">P. Unitario</th>
+                        <th style="text-align: right; width: 120px;">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="previewTableBody">
+                    <tr class="empty-state">
+                        <td colspan="4">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                            <p>Agregue productos para ver el detalle</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-                    <td>
-                        <input asp-for="Items[@i].Cantidad" class="form-control" type="number" min="1" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        <div class="preview-totales">
+            <div class="total-bar">
+                <span>Subtotal:</span>
+                <span id="previewSubtotal">₡0</span>
+            </div>
+            <div class="pago-bar">
+                <span>Pago</span>
+                <span id="previewPago">₡0</span>
+            </div>
+            <div class="pendiente-bar">
+                <span>Total Pendiente:</span>
+                <span id="previewPendiente">₡0</span>
+            </div>
+        </div>
 
-    <button type="button" class="btn btn-secondary" onclick="addItem()">Agregar Producto</button>
+        <div class="preview-footer">
+            <h3>Métodos de pago</h3>
+            <div class="metodo-pago-badge" id="previewMetodoPago">Sinpe</div>
+            <p style="font-weight: 700; font-size: 1.1rem; margin: 5px 0;" id="previewTelefono">-</p>
+            <p style="font-weight: 600; margin: 5px 0;" id="previewNombreFacturador">-</p>
+            <p style="text-align: right; margin-top: 20px; color: #059669; font-weight: 600; font-style: italic;">
+                ¡Gracias por la confianza!<br />Trinisol Productos de Limpieza
+            </p>
+        </div>
+    </div>
+</div>
 
-    <br /><br />
+<!-- Modal para cargar logo -->
+<div class="modal fade" id="logoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cargar Logo de Trinisol</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="inputLogo" accept="image/*" class="form-control" />
+                <p class="text-muted mt-2">Sube el logo de Trinisol (formato: PNG, JPG, SVG)</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="cargarLogo()">Cargar Logo</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <button type="submit" class="btn btn-primary">Vista Previa</button>
-</form>
+<!-- Botón flotante para cambiar logo -->
+<button type="button" class="btn btn-primary"
+        style="position: fixed; bottom: 20px; right: 20px; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"
+        data-bs-toggle="modal" data-bs-target="#logoModal"
+        title="Cambiar logo">
+    <i class="bi bi-image" style="font-size: 1.5rem;"></i>
+</button>
 
 @section Scripts {
     <script>
-        function addItem() {
-            const index = document.querySelectorAll("#items-body tr").length;
+        let itemCounter = 0;
+        const productos = @Html.Raw(Json.Serialize(Model.Productos));
+        const presentaciones = @Html.Raw(Json.Serialize(Model.Presentaciones));
 
-            const row = `
-            <tr>
-                <td>
-                    <select name="Items[${index}].ProductoId" class="form-control product-select">
-                        <option value="">Seleccione</option>
-                        ${generateProducts()}
-                    </select>
-                </td>
-                <td>
-                    <select name="Items[${index}].PresentacionId" class="form-control presentacion-select">
-                        <option value="">Seleccione presentación</option>
-                        ${generatePresentaciones()}
-                    </select>
-                </td>
-                <td>
-                    <input name="Items[${index}].Cantidad" class="form-control" type="number" min="1" />
-                </td>
-            </tr>
-            `;
-
-            document.querySelector("#items-body").insertAdjacentHTML("beforeend", row);
+        function formatMoney(value) {
+            return '₡' + Math.round(value).toLocaleString('es-CR');
         }
 
-        function generateProducts() {
-            return `
-                @foreach (var p in Model.Productos)
-                {
-                        <option value="@p.Id">@p.Nombre</option>
+        itemCounter = 0;
+        function agregarItem() {
+            const index = itemCounter++;
+            const html = `
+                <div class="item-row" id="item-${index}">
+                    <div class="item-selects">
+                        <select name="Items[${index}].ProductoId" class="form-select form-select-sm"
+                                onchange="onProductoChange(${index}, this.value)" required>
+                            <option value="">Seleccione producto...</option>
+                            ${productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')}
+                        </select>
+
+                        <select name="Items[${index}].PresentacionId" class="form-select form-select-sm"
+                                id="presentacion-${index}" onchange="actualizarPreview()" required>
+                            <option value="">Seleccione presentación...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <span class="form-text" style="font-size: 0.75rem;">Precio:</span>
+                        <div id="precio-${index}" style="font-weight: 600; color: #059669;">-</div>
+                    </div>
+
+                    <input name="Items[${index}].Cantidad" type="number" class="form-control"
+                           value="1" min="1" onchange="actualizarPreview()" required />
+
+                    <button type="button" class="btn-remove" onclick="eliminarItem(${index})" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('itemsContainer').insertAdjacentHTML('beforeend', html);
+        }
+
+
+        function onProductoChange(itemId, productoId) {
+            const selectPresentacion = document.getElementById(`presentacion-${itemId}`);
+            const precioDiv = document.getElementById(`precio-${itemId}`);
+            selectPresentacion.innerHTML = '<option value="">Seleccione presentación...</option>';
+            precioDiv.textContent = '-';
+
+            if (productoId) {
+                const presentacionesProducto = presentaciones.filter(p => p.productoId == productoId);
+                presentacionesProducto.forEach(p => {
+                    selectPresentacion.innerHTML += `<option value="${p.id}" data-precio="${p.precioUnitario}">
+                        ${p.nombrePresentacion}
+                    </option>`;
+                });
+            }
+            actualizarPreview();
+        }
+
+        function eliminarItem(itemId) {
+            document.getElementById(`item-${itemId}`).remove();
+            actualizarPreview();
+        }
+
+        function actualizarPreview() {
+            const items = document.querySelectorAll('.item-row');
+            const tbody = document.getElementById('previewTableBody');
+
+            if (items.length === 0) {
+                tbody.innerHTML = `
+                    <tr class="empty-state">
+                        <td colspan="4">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                            <p>Agregue productos para ver el detalle</p>
+                        </td>
+                    </tr>`;
+                actualizarTotales(0);
+                return;
+            }
+
+            let html = '';
+            let subtotalProductos = 0;
+
+            items.forEach(item => {
+                const productoSelect = item.querySelector('select[name*="ProductoId"]');
+                const presentacionSelect = item.querySelector('select[name*="PresentacionId"]');
+                const cantidadInput = item.querySelector('input[name*="Cantidad"]');
+
+                const productoId = productoSelect.value;
+                const presentacionId = presentacionSelect.value;
+                const cantidad = parseInt(cantidadInput.value) || 0;
+
+                // Actualizar precio visible
+                const itemId = item.id.split('-')[1];
+                const precioDiv = document.getElementById(`precio-${itemId}`);
+                if (presentacionId) {
+                    const presentacion = presentaciones.find(p => p.id == presentacionId);
+                    if (presentacion) {
+                        precioDiv.textContent = formatMoney(presentacion.precioUnitario);
+                    }
                 }
-            `;
+
+                if (productoId && presentacionId && cantidad > 0) {
+                    const producto = productos.find(p => p.id == productoId);
+                    const presentacion = presentaciones.find(p => p.id == presentacionId);
+
+                    if (producto && presentacion) {
+                        const total = presentacion.precioUnitario * cantidad;
+                        subtotalProductos += total;
+
+                        html += `
+                            <tr class="producto-row">
+                                <td><strong>${producto.nombre}</strong><br>
+                                    <small style="color: #6b7280;">${presentacion.nombrePresentacion}</small>
+                                </td>
+                                <td style="text-align: center;">${cantidad}</td>
+                                <td style="text-align: right;">${formatMoney(presentacion.precioUnitario)}</td>
+                                <td style="text-align: right; font-weight: 600;">${formatMoney(total)}</td>
+                            </tr>
+                        `;
+                    }
+                }
+            });
+
+            if (html === '') {
+                tbody.innerHTML = `
+                    <tr class="empty-state">
+                        <td colspan="4">Complete los datos de los productos</td>
+                    </tr>`;
+            } else {
+                const saldoPendiente = parseFloat(document.getElementById('inputSaldoPendiente').value) || 0;
+                if (saldoPendiente > 0) {
+                    html = `
+                        <tr class="saldo-row">
+                            <td colspan="3" style="color: #92400e; font-weight: 600;">Saldo Pendiente Anterior</td>
+                            <td style="text-align: right; color: #92400e; font-weight: 700;">${formatMoney(saldoPendiente)}</td>
+                        </tr>
+                    ` + html;
+                }
+                tbody.innerHTML = html;
+            }
+
+            actualizarTotales(subtotalProductos);
         }
 
-        function generatePresentaciones() {
-            return `
-                @foreach (var pr in Model.Presentaciones)
-                {
-                        <option value="@pr.Id" data-producto="@pr.ProductoId">
-                            @pr.NombrePresentacion (₡@pr.PrecioUnitario)
-                        </option>
-                }
-            `;
+        function actualizarTotales(subtotalProductos) {
+            const saldoPendiente = parseFloat(document.getElementById('inputSaldoPendiente').value) || 0;
+            const pago = parseFloat(document.getElementById('inputPago').value) || 0;
+
+            const subtotal = subtotalProductos + saldoPendiente;
+            const pendiente = subtotal - pago;
+
+            document.getElementById('previewSubtotal').textContent = formatMoney(subtotal);
+            document.getElementById('previewPago').textContent = formatMoney(pago);
+            document.getElementById('previewPendiente').textContent = formatMoney(pendiente);
         }
+
+        function cargarLogo() {
+            const inputLogo = document.getElementById('inputLogo');
+            const file = inputLogo.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgPreview = document.getElementById('logoPreview');
+                    imgPreview.src = e.target.result;
+                    imgPreview.style.display = 'block';
+                    document.getElementById('logoPlaceholder').style.display = 'none';
+
+                    // Guardar en localStorage
+                    localStorage.setItem('trinisolLogo', e.target.result);
+                };
+                reader.readAsDataURL(file);
+
+                // Cerrar modal
+                bootstrap.Modal.getInstance(document.getElementById('logoModal')).hide();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('selectCliente').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const clienteNombre = selectedOption.getAttribute('data-nombre') || 'Seleccione un cliente';
+            document.getElementById('previewCliente').innerHTML =
+                clienteNombre === 'Seleccione un cliente'
+                    ? `<em style="color: #9ca3af;">${clienteNombre}</em>`
+                    : `<strong>${clienteNombre}</strong>`;
+        });
+
+        document.getElementById('selectFacturadoPor').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const telefono = selectedOption.getAttribute('data-telefono') || '-';
+            const nombre = selectedOption.getAttribute('data-nombre') || '-';
+
+            document.getElementById('previewTelefono').textContent = telefono;
+            document.getElementById('previewNombreFacturador').textContent = nombre;
+
+            // Actualizar campos ocultos para el formulario
+            document.getElementById('hiddenFacturadoPor').value = nombre;
+            document.getElementById('hiddenTelefonoFacturador').value = telefono;
+        });
+
+        document.getElementById('selectMetodoPago').addEventListener('change', function() {
+            document.getElementById('previewMetodoPago').textContent = this.value;
+        });
+
+        document.getElementById('inputSaldoPendiente').addEventListener('input', actualizarPreview);
+        document.getElementById('inputPago').addEventListener('input', actualizarPreview);
+
+        // Cargar logo guardado
+        window.addEventListener('load', function() {
+            const logoGuardado = localStorage.getItem('trinisolLogo');
+            if (logoGuardado) {
+                const imgPreview = document.getElementById('logoPreview');
+                imgPreview.src = logoGuardado;
+                imgPreview.style.display = 'block';
+                document.getElementById('logoPlaceholder').style.display = 'none';
+            }
+
+            // Agregar primer item
+            agregarItem();
+        });
     </script>
 }

@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Trinisol.Models.Factura>
+
+@{
+    ViewData["Title"] = "Facturas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-receipt-cutoff"></i> Facturas</h2>
+    <a class="btn btn-success" href="/Factura/Generar">
+        <i class="bi bi-plus-circle"></i> Nueva Factura
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Nro. Factura</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Total</th>
+                    <th>Pago</th>
+                    <th>Pendiente</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var factura in Model)
+                {
+                    var pendiente = factura.Total - factura.Pago;
+                    var estadoClass = pendiente > 0 ? "bg-warning" : "bg-success";
+                    var estadoTexto = pendiente > 0 ? "Pendiente" : "Pagado";
+
+                    <tr>
+                        <td>@factura.Id</td>
+                        <td><strong>@factura.NumeroFactura</strong></td>
+                        <td>@factura.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>@factura.Cliente.Nombre</td>
+                        <td>₡@factura.Total.ToString("N0")</td>
+                        <td class="text-success">₡@factura.Pago.ToString("N0")</td>
+                        <td class="text-danger">
+                            <strong>₡@pendiente.ToString("N0")</strong>
+                        </td>
+                        <td>
+                            <span class="badge @estadoClass">@estadoTexto</span>
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-primary"
+                               asp-action="Detalle"
+                               asp-route-id="@factura.Id">
+                                <i class="bi bi-eye"></i> Ver
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center mt-4">
+        <i class="bi bi-info-circle"></i> No hay facturas registradas.
+        <br />
+        <a href="/Factura/Generar" class="btn btn-success mt-2">
+            Crear primera factura
+        </a>
+    </div>
+}
